@@ -5,17 +5,21 @@ export class PlayerBullet {
   y = 0
   width = 4
   height = 12
-  speed = 10
+  vx = 0
+  vy = -10
   active = false
 
   reset() {
     this.x = 0
     this.y = 0
+    this.vx = 0
+    this.vy = -10
     this.active = false
   }
 
   update() {
-    this.y -= this.speed
+    this.x += this.vx
+    this.y += this.vy
   }
 
   rect(): Rect {
@@ -28,14 +32,11 @@ export class PlayerBullet {
   }
 
   render(ctx: CanvasRenderingContext2D) {
-    // Glow
     ctx.shadowColor = '#ffdd00'
     ctx.shadowBlur = 6
     ctx.fillStyle = '#ffee44'
     ctx.fillRect(this.x - this.width / 2, this.y - this.height / 2, this.width, this.height)
     ctx.shadowBlur = 0
-
-    // Core
     ctx.fillStyle = '#fff'
     ctx.fillRect(this.x - 1, this.y - this.height / 2, 2, this.height)
   }

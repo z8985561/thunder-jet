@@ -4,6 +4,14 @@ export class InputManager {
   y = 0
   active = false
   keys: Record<string, boolean> = {}
+  _prevSpace = false
+
+  // Touch relative drag mode
+  touchActive = false
+  touchStartX = 0
+  touchStartY = 0
+  touchDelta: { dx: number; dy: number } | null = null
+  private touchCount = 0
 
   private boundTouchStart: (e: TouchEvent) => void
   private boundTouchMove: (e: TouchEvent) => void
@@ -47,8 +55,18 @@ export class InputManager {
 
   private onTouchStart(e: TouchEvent) {
     e.preventDefault()
+    this.touchCount = e.touches.length
+    if (this.touchCount >= 2) {
+      // Two-finger: trigger bomb via flag (GameEngine reads this)
+      this.keys['Space'] = true
+      return
+    }
     const touch = e.touches[0]
     const pos = this.getCanvasPos(touch.clientX, touch.clientY)
+    this.touchStartX = pos.x
+    this.touchStartY = pos.y
+    this.touchDelta = { dx: 0, dy: 0 }
+    this.touchActive = true
     this.x = pos.x
     this.y = pos.y
     this.active = true
@@ -56,14 +74,35 @@ export class InputManager {
 
   private onTouchMove(e: TouchEvent) {
     e.preventDefault()
+    this.touchCount = e.touches.length
+    if (this.touchCount >= 2) return
     const touch = e.touches[0]
     const pos = this.getCanvasPos(touch.clientX, touch.clientY)
     this.x = pos.x
     this.y = pos.y
+    if (this.touchDelta) {
+      this.touchDelta.dx = pos.x - this.touchStartX
+      this.touchDelta.dy = pos.y - this.touchStartY
+    }
   }
 
-  private onTouchEnd(_e: TouchEvent) {
-    this.active = false
+  private onTouchEnd(e: TouchEvent) {
+    this.touchCount = e.touches.length
+    if (this.touchCount < 2) {
+      this.keys['Space'] = false
+    }
+    if (e.touches.length === 0) {
+      this.touchActive = false
+      this.touchDelta = null
+      this.active = false
+    } else {
+      // Remaining finger becomes new reference
+      const touch = e.touches[0]
+      const pos = this.getCanvasPos(touch.clientX, touch.clientY)
+      this.touchStartX = pos.x
+      this.touchStartY = pos.y
+      this.touchDelta = { dx: 0, dy: 0 }
+    }
   }
 
   private onMouseDown(e: MouseEvent) {

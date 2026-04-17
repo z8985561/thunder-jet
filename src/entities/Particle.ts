@@ -6,6 +6,7 @@ export class Particle {
   life = 0
   maxLife = 0
   size = 2
+  color = '' // empty = default orange
   active = false
 
   reset() {
@@ -15,6 +16,8 @@ export class Particle {
     this.vy = 0
     this.life = 0
     this.maxLife = 0
+    this.size = 2
+    this.color = ''
     this.active = false
   }
 
@@ -33,10 +36,13 @@ export class Particle {
     const alpha = this.life / this.maxLife
     ctx.globalAlpha = alpha
 
+    const color = this.color || '#ffaa00'
+    const glowColor = this.color || '#ff6600'
+
     // Outer glow
-    ctx.shadowColor = '#ff6600'
+    ctx.shadowColor = glowColor
     ctx.shadowBlur = 4
-    ctx.fillStyle = '#ffaa00'
+    ctx.fillStyle = color
     ctx.beginPath()
     ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2)
     ctx.fill()

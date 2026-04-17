@@ -27,13 +27,16 @@ onMounted(() => {
 
   // Touch tap for menu/pause/gameover (only if not dragging)
   let touchStartY = 0
+  let touchStartX = 0
   canvasRef.value.addEventListener('touchstart', (e) => {
     touchStartY = e.touches[0].clientY
+    touchStartX = e.touches[0].clientX
   })
   canvasRef.value.addEventListener('touchend', (e) => {
     if (!engine) return
     const touch = e.changedTouches[0]
-    if (Math.abs(touch.clientY - touchStartY) < 10) {
+    // Only treat as tap if single finger and didn't move much
+    if (e.touches.length === 0 && Math.abs(touch.clientY - touchStartY) < 10 && Math.abs(touch.clientX - touchStartX) < 10) {
       const rect = canvasRef.value!.getBoundingClientRect()
       const x = (touch.clientX - rect.left) * (canvasRef.value!.width / rect.width)
       const y = (touch.clientY - rect.top) * (canvasRef.value!.height / rect.height)

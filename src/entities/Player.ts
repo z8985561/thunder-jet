@@ -7,12 +7,23 @@ export class Player {
   height = 40
   thrustAnim = 0
 
+  // Visual rect (full body)
   rect(): Rect {
     return {
       x: this.x - this.width / 2,
       y: this.y - this.height / 2,
       width: this.width,
       height: this.height,
+    }
+  }
+
+  // Smaller hit rect (core body only, no wingtips)
+  hitRect(): Rect {
+    return {
+      x: this.x - 6,
+      y: this.y - 8,
+      width: 12,
+      height: 16,
     }
   }
 
@@ -38,18 +49,33 @@ export class Player {
     // Body
     ctx.fillStyle = '#3377ee'
     ctx.beginPath()
-    ctx.moveTo(x, y - 20)       // nose
+    ctx.moveTo(x, y - 20)
     ctx.lineTo(x - 6, y - 5)
-    ctx.lineTo(x - 16, y + 14)  // left wing tip
+    ctx.lineTo(x - 16, y + 14)
     ctx.lineTo(x - 5, y + 8)
-    ctx.lineTo(x - 5, y + 14)   // left tail
+    ctx.lineTo(x - 5, y + 14)
     ctx.lineTo(x, y + 10)
-    ctx.lineTo(x + 5, y + 14)   // right tail
+    ctx.lineTo(x + 5, y + 14)
     ctx.lineTo(x + 5, y + 8)
-    ctx.lineTo(x + 16, y + 14)  // right wing tip
+    ctx.lineTo(x + 16, y + 14)
     ctx.lineTo(x + 6, y - 5)
     ctx.closePath()
     ctx.fill()
+
+    // Body outline for metal feel
+    ctx.strokeStyle = 'rgba(100,180,255,0.4)'
+    ctx.lineWidth = 1
+    ctx.beginPath()
+    ctx.moveTo(x, y - 20)
+    ctx.lineTo(x - 6, y - 5)
+    ctx.lineTo(x - 16, y + 14)
+    ctx.stroke()
+    ctx.beginPath()
+    ctx.moveTo(x, y - 20)
+    ctx.lineTo(x + 6, y - 5)
+    ctx.lineTo(x + 16, y + 14)
+    ctx.stroke()
+    ctx.lineWidth = 1
 
     // Cockpit
     ctx.fillStyle = '#88ccff'
