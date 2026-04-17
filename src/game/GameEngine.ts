@@ -101,7 +101,7 @@ export class GameEngine {
 
     // Load high score
     try {
-      this.highScore = parseInt(localStorage.getItem('thunderjet_highscore') || '0', 10)
+      this.highScore = parseInt(localStorage.getItem('knifedog_highscore') || '0', 10)
     } catch { this.highScore = 0 }
 
     this.bulletPool = new ObjectPool<PlayerBullet>(
@@ -263,7 +263,7 @@ export class GameEngine {
     // Save high score
     if (this.stats.score > this.highScore) {
       this.highScore = this.stats.score
-      try { localStorage.setItem('thunderjet_highscore', String(this.highScore)) } catch { /* ignore */ }
+      try { localStorage.setItem('knifedog_highscore', String(this.highScore)) } catch { /* ignore */ }
     }
     this.sfx.playGameOver()
     this.onStateChange?.(this.state)
@@ -801,17 +801,18 @@ export class GameEngine {
   }
 
   private renderMenu(ctx: CanvasRenderingContext2D, w: number, h: number) {
-    ctx.shadowColor = '#4488ff'
+    // Title: 刀盾狗
+    ctx.shadowColor = '#ff8844'
     ctx.shadowBlur = 30
     ctx.fillStyle = '#fff'
     ctx.font = 'bold 36px Arial'
     ctx.textAlign = 'center'
-    ctx.fillText('雷霆战机', w / 2, h / 2 - 100)
+    ctx.fillText('刀盾狗', w / 2, h / 2 - 100)
     ctx.shadowBlur = 0
 
     ctx.fillStyle = 'rgba(255,255,255,0.6)'
     ctx.font = '14px Arial'
-    ctx.fillText('THUNDER JET', w / 2, h / 2 - 70)
+    ctx.fillText('KNIFE & SHIELD DOG', w / 2, h / 2 - 70)
 
     // High score
     if (this.highScore > 0) {
@@ -820,19 +821,134 @@ export class GameEngine {
       ctx.fillText(`最高分: ${this.highScore}`, w / 2, h / 2 - 45)
     }
 
-    // Demo plane
-    const demoY = h / 2 - 10
-    ctx.fillStyle = '#4488ff'
+    // Demo dog (simple cute dog face)
+    const dx = w / 2
+    const dy = h / 2 - 10
+
+    // Body
+    ctx.fillStyle = '#c49a6c'
     ctx.beginPath()
-    ctx.moveTo(w / 2, demoY - 20)
-    ctx.lineTo(w / 2 - 15, demoY + 15)
-    ctx.lineTo(w / 2 - 5, demoY + 10)
-    ctx.lineTo(w / 2, demoY + 18)
-    ctx.lineTo(w / 2 + 5, demoY + 10)
-    ctx.lineTo(w / 2 + 15, demoY + 15)
+    ctx.ellipse(dx, dy + 2, 16, 18, 0, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Belly
+    ctx.fillStyle = '#e8c99b'
+    ctx.beginPath()
+    ctx.ellipse(dx, dy + 6, 10, 10, 0, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Helmet
+    ctx.fillStyle = '#4477cc'
+    ctx.beginPath()
+    ctx.ellipse(dx, dy - 14, 14, 10, 0, Math.PI, Math.PI * 2)
+    ctx.fill()
+
+    // Helmet crest
+    ctx.fillStyle = '#ff6644'
+    ctx.beginPath()
+    ctx.moveTo(dx, dy - 24)
+    ctx.lineTo(dx - 3, dy - 18)
+    ctx.lineTo(dx + 3, dy - 18)
     ctx.closePath()
     ctx.fill()
 
+    // Ears
+    ctx.fillStyle = '#a07850'
+    ctx.beginPath()
+    ctx.ellipse(dx - 12, dy - 12, 5, 8, -0.3, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.fillStyle = '#ddb088'
+    ctx.beginPath()
+    ctx.ellipse(dx - 12, dy - 11, 3, 5, -0.3, 0, Math.PI * 2)
+    ctx.fill()
+
+    ctx.fillStyle = '#a07850'
+    ctx.beginPath()
+    ctx.ellipse(dx + 12, dy - 12, 5, 8, 0.3, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.fillStyle = '#ddb088'
+    ctx.beginPath()
+    ctx.ellipse(dx + 12, dy - 11, 3, 5, 0.3, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Eyes
+    ctx.fillStyle = '#fff'
+    ctx.beginPath()
+    ctx.ellipse(dx - 5, dy - 6, 4, 5, 0, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.ellipse(dx + 5, dy - 6, 4, 5, 0, 0, Math.PI * 2)
+    ctx.fill()
+
+    ctx.fillStyle = '#2a1a0a'
+    ctx.beginPath()
+    ctx.arc(dx - 4, dy - 5, 2.5, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.arc(dx + 6, dy - 5, 2.5, 0, Math.PI * 2)
+    ctx.fill()
+
+    ctx.fillStyle = '#fff'
+    ctx.beginPath()
+    ctx.arc(dx - 3.5, dy - 6, 1.2, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.arc(dx + 6.5, dy - 6, 1.2, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Nose
+    ctx.fillStyle = '#3a2a1a'
+    ctx.beginPath()
+    ctx.ellipse(dx, dy + 1, 3, 2.5, 0, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Blush
+    ctx.fillStyle = 'rgba(255,150,150,0.3)'
+    ctx.beginPath()
+    ctx.ellipse(dx - 10, dy, 3, 2, 0, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.ellipse(dx + 10, dy, 3, 2, 0, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Shield (left)
+    ctx.fillStyle = '#3366cc'
+    ctx.beginPath()
+    ctx.ellipse(dx - 22, dy + 2, 10, 11, -0.15, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.strokeStyle = '#88bbff'
+    ctx.lineWidth = 1.5
+    ctx.beginPath()
+    ctx.ellipse(dx - 22, dy + 2, 10, 11, -0.15, 0, Math.PI * 2)
+    ctx.stroke()
+    ctx.lineWidth = 1
+    ctx.fillStyle = '#5588dd'
+    ctx.beginPath()
+    ctx.ellipse(dx - 22, dy + 2, 7, 8, -0.15, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.fillStyle = '#fff'
+    ctx.font = '10px Arial'
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    ctx.fillText('★', dx - 22, dy + 2)
+    ctx.textBaseline = 'alphabetic'
+
+    // Knife (right)
+    const kx = dx + 22
+    const ky = dy - 2
+    ctx.fillStyle = '#d0d8e0'
+    ctx.beginPath()
+    ctx.moveTo(kx, ky - 12)
+    ctx.lineTo(kx - 3.5, ky + 4)
+    ctx.lineTo(kx + 3.5, ky + 4)
+    ctx.closePath()
+    ctx.fill()
+    ctx.fillStyle = '#aa8822'
+    ctx.fillRect(kx - 4.5, ky + 4, 9, 2)
+    ctx.fillStyle = '#8b6914'
+    ctx.fillRect(kx - 2.5, ky + 6, 5, 7)
+
+    // Start button
     ctx.fillStyle = '#ffd700'
     ctx.font = 'bold 20px Arial'
     const pulse = Math.sin(Date.now() / 400) * 0.3 + 0.7
